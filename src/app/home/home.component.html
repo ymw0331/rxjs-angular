@@ -1,0 +1,57 @@
+
+<div class="courses-panel">
+
+  <h3>All Courses</h3>
+
+  <mat-tab-group>
+
+    <mat-tab label="Beginners">
+      <courses-card-list [courses]="beginnerCourses$ | async"
+        (coursesChanged)="reloadCourses()"></courses-card-list>
+
+      <!-- <mat-card *ngFor="let course of beginnerCourses" class="course-card mat-elevation-z10"> -->
+      <!-- to let view to subscribe to observable, we need to add built in "async" pipe -->
+
+      <!-- <mat-card *ngFor="let course of (beginnerCourses$ | async)"
+        class="course-card mat-elevation-z10"> -->
+
+      <!-- each of the observables is to pass to the view using angular async pipe, we have 2 observables, each with its own subscription, thats why see 2 http requests in network log-->
+      <!-- for each subscription to the courses$ observable or to any observables directly derived from it, we will get  -->
+      <!-- <mat-card-header>
+
+          <mat-card-title>{{course.description}}</mat-card-title>
+
+        </mat-card-header>
+
+        <img mat-card-image [src]="course.iconUrl">
+
+        <mat-card-content>
+          <p>{{course.longDescription}}</p>
+        </mat-card-content>
+
+        <mat-card-actions class="course-actions">
+
+          <button mat-button mat-raised-button color="primary"
+            [routerLink]="['/courses', course.id]">
+            VIEW COURSE
+          </button>
+
+          <button mat-button mat-raised-button color="accent"
+            (click)="editCourse(course)">
+            EDIT
+          </button>
+
+        </mat-card-actions> -->
+
+      <!-- </mat-card> -->
+
+    </mat-tab>
+
+    <mat-tab label="Advanced">
+      <courses-card-list [courses]="advancedCourses$ | async"
+        (coursesChanged)="reloadCourses()"></courses-card-list>
+    </mat-tab>
+
+  </mat-tab-group>
+
+</div>
