@@ -1,1 +1,6 @@
-
+<!-- consume the loading observable using async pipe -->
+<!-- access the loadingService and its loading$ observable, and it in charge passing the immediate value by loading observable to template   -->
+<!-- *ngIf expression to be evaluated as true, whenever loading$ observable emit true value and otherwise -->
+<div class="spinner-container" *ngIf="loadingService.loading$ | async">
+    <mat-spinner></mat-spinner>
+</div>

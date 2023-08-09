@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 import { CoursesService } from '../services/courses.service';
+import { LoadingService } from '../loading/loading.service';
 
 
 @Component({
@@ -20,11 +21,15 @@ export class HomeComponent implements OnInit {
   // mutable state variable changed to observable
   beginnerCourses$: Observable<Course[]>;
 
+  intermediateCourses$: Observable<Course[]>;
+
   advancedCourses$: Observable<Course[]>;
 
+  // DI allow us to inject any dependency that component need directly into constructor without knowing where dependency come from, using this mechanism, can easily inject a shared services at diff level of component tree
   constructor(
     // private http: HttpClient, // moved to CoursesService
-    private coursesService: CoursesService) {
+    private coursesService: CoursesService,
+    private loadingService: LoadingService) {
   }
 
   ngOnInit() { // never call ngOnInit directly from anywhere from the component
@@ -34,6 +39,10 @@ export class HomeComponent implements OnInit {
 
   // reloadCourses fired in case new changes made to reflect
   reloadCourses() {
+
+    // turn on loading
+    // this.loadingService.loadingOn()
+
 
     // Place this logic in an angular service where it can be reused by other component
 
@@ -49,12 +58,17 @@ export class HomeComponent implements OnInit {
     //       this.advancedCourses = courses.filter(course => course.category == "ADVANCED");
     //     });
 
+
     // add $ at end of observable to distinguish those which is not
     // observable that we want to return here should trigger the request only once
     const courses$ = this.coursesService.loadAllCourses()
       .pipe(
-        map(courses => courses.sort(sortCoursesBySeqNo))
+        map(courses => courses.sort(sortCoursesBySeqNo)),
+        // finalize(() => this.loadingService.loadingOff()) // finalize wait for loadAllCourses() complete properly or error outs
       )
+
+    const loadCourses$ = this.loadingService.showLoaderUntilCompleted(courses$)
+
 
     // using map operator, we can derive 2 separated observables
     // results to be separated up 2 observables (it needed to be fixed, because http request should be called only once )
@@ -63,16 +77,23 @@ export class HomeComponent implements OnInit {
     // courses$.subscribe(val => console.log(val))
 
     // 1st subscription
-    this.beginnerCourses$ = courses$
+    this.beginnerCourses$ = loadCourses$
       .pipe(
         map(courses => courses.filter(course => course.category == "BEGINNER"))
       )
 
+    this.intermediateCourses$ = loadCourses$
+      .pipe(
+        map(courses => courses.filter(course => course.category == "INTERMEDIATE"))
+      )
+
     // 2nd subscription
-    this.advancedCourses$ = courses$
+    this.advancedCourses$ = loadCourses$
       .pipe(
         map(courses => courses.filter(course => course.category == "ADVANCED"))
       )
+
+
   }
 }
 

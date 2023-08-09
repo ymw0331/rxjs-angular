@@ -13,6 +13,7 @@ import { filter, tap } from 'rxjs/operators';
 
 export class CoursesCardListComponent implements OnInit {
 
+  // if 2 angular components at completely diff level but still intereact with each other, cannot use Input and Output
   @Input()
   courses: Course[] = [] //pass as props input
 
@@ -35,6 +36,7 @@ export class CoursesCardListComponent implements OnInit {
     dialogConfig.data = course;
 
     const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
+    // CourseDialogComponent is not direct child comp of CourseCardListComponent, complete separate branch of angular comp tree
 
     dialogRef.afterClosed()
       .pipe(

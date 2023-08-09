@@ -7,7 +7,8 @@ import { map, shareReplay } from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
-    //root injectable of the app, means only one instance of this service that is available to the whole service
+    // root injectable of the app, means only one instance of this service that is available to the whole service
+    // making it as global singleton, only one instance
 })
 export class CoursesService {
 
